@@ -1,29 +1,29 @@
 #!/bin/bash
 
-# URL zum Überprüfen
+# URL to check
 URL="http://software-db.test"
 
 # Docker-Container-Name
-CONTAINER_NAME="mein-container"
+CONTAINER_NAME="my-container"
 
-# E-Mail-Empfänger
-EMAIL="mein.email@example.com"
+# E-Mail-Recipient
+EMAIL="my_mail@example.com"
 
-# Funktion zum Senden von E-Mails
+# Function to send the mail
 send_email() {
-    SUBJECT="Docker-Container wurde neu gestartet"
-    BODY="Der Docker-Container '$CONTAINER_NAME' wurde neu gestartet, da die URL '$URL' nicht erreichbar war."
+    SUBJECT="Docker-Container rebooted"
+    BODY="The Docker-Container '$CONTAINER_NAME' was rebooted, because the URL '$URL' did not respond."
     echo "$BODY" | mail -s "$SUBJECT" "$EMAIL"
 }
 
-# HTTP-Statuscode abrufen
+# get HTTP status code
 HTTP_STATUS=$(curl -s -o /dev/null -w "%{http_code}" "$URL")
 
-# Überprüfen, ob HTTP-Statuscode ungleich 200 ist
+# Check if HTTP status code is not 200
 if [ $HTTP_STATUS -ne 200 ]; then
-    # Container neu starten
+    # Container restart
     docker restart "$CONTAINER_NAME"
 
-    # E-Mail senden
+    # send E-Mail
     send_email
 fi
